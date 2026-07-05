@@ -131,7 +131,7 @@ Keberadaan berbagai ekstensi dokumen menunjukkan bahwa executable memiliki keter
 
 ## Hasil Analisis
 
-![Strings Analysis](screenshot/string.png)
+![Strings Analysis](screenshot/strings.png)
 
 ---
 

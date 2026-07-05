@@ -31,20 +31,6 @@ Beberapa tools yang digunakan selama proses analisis antara lain:
 - HxD
 - CertUtil / SHA256SUM
 
----
-
-# Struktur Repository
-
-```text
-static-analysis-lab/
-├── README.md
-├── docs/
-│   ├── sample-01-analysis.md
-│   └── sample-02-analysis.md
-└── scripts/
-```
-
----
 
 # Daftar Analisis
 

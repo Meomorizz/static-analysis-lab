@@ -87,7 +87,7 @@ Dari hasil analisis dapat diketahui bahwa executable masih menggunakan struktur 
 
 ## Hasil Analisis
 
-![PE Header](screenshots/PEHeader.png)
+![PE Header](screenshot/PEHeader.png)
 
 ---
 
@@ -131,7 +131,7 @@ Keberadaan berbagai ekstensi dokumen menunjukkan bahwa executable memiliki keter
 
 ## Hasil Analisis
 
-![Strings Analysis](screenshots/string.png)
+![Strings Analysis](screenshot/string.png)
 
 ---
 
@@ -150,7 +150,7 @@ Library tersebut menunjukkan bahwa executable memanfaatkan Windows API untuk men
 
 ## Hasil Analisis
 
-![Import Function Analysis](screenshots/importfunc.png)
+![Import Function Analysis](screenshot/importfunc.png)
 
 ---
 

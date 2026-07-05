@@ -1,50 +1,36 @@
-# Sample 01 — Static Analysis of WannaCry Binary
+# Sample 01 — Static Analysis of WannaCry Executable
 
-**Sample:** WannaCry.exe  
-**Analysis Type:** Static Analysis  
-**Operating System:** Microsoft Windows  
-**Format:** Portable Executable (PE)  
-**Analysis Date:** _(Isi sesuai tanggal analisis)_  
+**Binary:** WannaCry.exe  
+**Jenis Analisis:** Static Analysis  
+**Platform:** Microsoft Windows  
+**Format Binary:** Portable Executable (PE)  
+**Status:** Completed
 
 ---
 
 # Pendahuluan
 
-Dokumen ini berisi hasil analisis statis terhadap binary **WannaCry.exe** menggunakan beberapa tools Reverse Engineering. Analisis dilakukan tanpa menjalankan executable sehingga seluruh informasi diperoleh melalui pemeriksaan struktur internal file Portable Executable (PE).
+Dokumen ini berisi hasil analisis statis terhadap binary **WannaCry.exe** sebagai bagian dari pembelajaran Reverse Engineering. Analisis dilakukan tanpa menjalankan executable sehingga seluruh informasi diperoleh melalui observasi terhadap struktur internal file menggunakan berbagai tools analisis executable.
 
-Tujuan analisis ini adalah memahami karakteristik dasar executable, mengidentifikasi library yang digunakan, memperoleh informasi dari strings, serta mengamati struktur binary sebagai langkah awal dalam proses Reverse Engineering.
-
----
-
-# 1. Triage
-
-Tahap pertama adalah melakukan identifikasi awal terhadap executable.
-
-| Atribut | Nilai |
-|---------|-------|
-| Nama File | WannaCry.exe |
-| Format | PE32 / PE32+ |
-| Arsitektur | x86 / x64 |
-| Operating System | Microsoft Windows |
-| Compiler | Microsoft Visual C/C++ |
-| Packer | Packed / Compressed (.rsrc) |
+Static Analysis merupakan tahapan awal yang penting karena mampu memberikan gambaran mengenai karakteristik binary, library yang digunakan, struktur file, hingga indikasi perilaku program tanpa menimbulkan risiko menjalankan executable secara langsung.
 
 ---
 
-# 2. Hash File
+# Tujuan Analisis
 
-Hash digunakan sebagai identitas unik executable sehingga dapat membantu proses identifikasi maupun pencarian informasi pada database malware.
+Analisis ini dilakukan untuk:
 
-| Algoritma | Nilai |
-|-----------|-------|
-| MD5 | `84c82835a5d21bbcf75a61706d8ab549` |
-| SHA-256 | `ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa` |
+- Mengidentifikasi karakteristik dasar executable.
+- Memahami struktur Portable Executable (PE).
+- Mengidentifikasi library Windows yang digunakan.
+- Menemukan informasi penting melalui Strings Analysis.
+- Mengamati struktur executable sebagai dasar proses Reverse Engineering.
 
 ---
 
-# 3. Tools yang Digunakan
+# Tools yang Digunakan
 
-Analisis dilakukan menggunakan beberapa tools berikut.
+Selama proses analisis digunakan beberapa tools berikut:
 
 - Detect It Easy (DIE)
 - PEStudio
@@ -55,37 +41,59 @@ Analisis dilakukan menggunakan beberapa tools berikut.
 
 ---
 
-# 4. Header Analysis
+# 1. Triage
 
-Header Analysis dilakukan untuk memperoleh informasi dasar mengenai executable.
+Tahap triage dilakukan untuk memperoleh informasi awal mengenai executable sebelum memasuki analisis yang lebih mendalam.
 
-Beberapa informasi penting yang berhasil diidentifikasi antara lain:
+| Atribut | Nilai |
+|---------|-------|
+| Nama File | WannaCry.exe |
+| Format | PE32 / PE32+ |
+| Arsitektur | x86 / x64 |
+| Operating System | Microsoft Windows |
+| Compiler | Microsoft Visual C/C++ |
+| Packer | Packed / Compressed (.rsrc) |
 
-| Parameter | Hasil |
-|-----------|-------|
-| File Format | Portable Executable (PE) |
-| Entry Point | PE32 Executable Entry Point |
-| Image Base | PE32 Windows Executable |
-| Architecture | x86 / x64 |
-| Number of Sections | .text, .rdata, .data, .rsrc |
-
-### Hasil Analisis
-
-Header menunjukkan bahwa executable menggunakan format **Portable Executable (PE)** yang merupakan format standar pada sistem operasi Windows.
-
-Informasi seperti Entry Point dan Image Base memberikan gambaran bagaimana executable dipetakan ke dalam memori sebelum dijalankan oleh sistem operasi.
-
-> **Screenshot**
->
-> Tambahkan screenshot hasil Detect It Easy atau PEStudio.
->
-> **Referensi PPT Kelompok 7:** gunakan slide yang menampilkan hasil identifikasi PE Header / Detect It Easy.
+Berdasarkan hasil identifikasi awal, executable menggunakan format **Portable Executable (PE)** yang merupakan format standar aplikasi pada sistem operasi Windows.
 
 ---
 
-# 5. Section Analysis
+# 2. Hash File
 
-Executable terdiri atas beberapa section dengan fungsi yang berbeda.
+Hash digunakan sebagai identitas unik executable sehingga memudahkan proses identifikasi maupun pencocokan dengan database malware.
+
+| Algoritma | Nilai |
+|-----------|-------|
+| MD5 | `84c82835a5d21bbcf75a61706d8ab549` |
+| SHA-256 | `ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa` |
+
+Hash tersebut dapat digunakan untuk memastikan integritas file maupun mencari informasi tambahan pada platform analisis malware.
+
+---
+
+# 3. Header Analysis
+
+Analisis header bertujuan untuk mengetahui informasi dasar executable seperti format file, arsitektur, entry point, image base, serta struktur section.
+
+| Parameter | Hasil |
+|-----------|-------|
+| Format File | Portable Executable (PE) |
+| Entry Point | PE32 Executable Entry Point |
+| Image Base | PE32 Windows Executable |
+| Architecture | x86 / x64 |
+| Number of Sections | `.text`, `.rdata`, `.data`, `.rsrc` |
+
+Hasil pemeriksaan menunjukkan bahwa executable masih menggunakan struktur Portable Executable standar Windows. Informasi tersebut memberikan gambaran mengenai bagaimana sistem operasi akan memuat program ke dalam memori ketika dijalankan.
+
+<p align="center">
+    <img src="./screenshots/PEHeader.png" width="850">
+</p>
+
+---
+
+# 4. Section Analysis
+
+Executable memiliki beberapa section utama yang menyimpan kode program maupun data yang diperlukan selama proses eksekusi.
 
 | Section | Fungsi |
 |---------|--------|
@@ -94,25 +102,15 @@ Executable terdiri atas beberapa section dengan fungsi yang berbeda.
 | `.rdata` | Menyimpan data read-only |
 | `.rsrc` | Menyimpan resource program |
 
-### Hasil Analisis
-
-Seluruh section yang ditemukan merupakan section standar pada executable Windows.
-
-Section `.text` berisi instruksi yang akan dieksekusi prosesor, sedangkan `.data` dan `.rdata` menyimpan berbagai informasi yang digunakan selama program berjalan. Section `.rsrc` umumnya digunakan untuk menyimpan icon, dialog, maupun resource lain yang dimiliki executable.
-
-> **Screenshot**
->
-> Gunakan screenshot tampilan Section View dari PEStudio atau DIE.
->
-> **Referensi PPT Kelompok 7:** slide yang menampilkan daftar section executable.
+Keberadaan section tersebut menunjukkan bahwa executable masih mengikuti struktur PE standar. Setiap section memiliki fungsi yang berbeda sehingga membantu analis memahami bagaimana program diorganisasikan sebelum dilakukan analisis lebih lanjut.
 
 ---
 
-# 6. Strings Analysis
+# 5. Strings Analysis
 
-Analisis strings dilakukan untuk menemukan informasi tekstual yang tersimpan di dalam executable.
+Analisis strings dilakukan untuk menemukan teks yang tersimpan di dalam executable.
 
-Beberapa string yang berhasil ditemukan antara lain:
+Beberapa string yang ditemukan antara lain:
 
 ```text
 .doc
@@ -129,81 +127,69 @@ MoveFile
 RegSetValueExA
 ```
 
-### Hasil Analisis
+Keberadaan ekstensi berbagai jenis dokumen menunjukkan bahwa executable memiliki kemungkinan berinteraksi dengan file pengguna. Selain itu ditemukan beberapa nama Windows API yang berhubungan dengan operasi file dan registry sehingga memberikan gambaran awal mengenai kemampuan executable.
 
-Strings memberikan petunjuk awal mengenai kemungkinan perilaku executable.
-
-Keberadaan ekstensi dokumen seperti `.doc`, `.xlsx`, `.pdf`, dan `.jpg` menunjukkan bahwa executable berinteraksi dengan berbagai jenis file. Selain itu, ditemukan nama beberapa Windows API yang berkaitan dengan operasi file dan registry.
-
-> **Screenshot**
->
-> Tambahkan hasil Strings Analysis.
->
-> **Referensi PPT Kelompok 7:** slide yang menampilkan hasil Strings.
+<p align="center">
+    <img src="./screenshots/string.png" width="850">
+</p>
 
 ---
 
-# 7. Import Function Analysis
+# 6. Import Function Analysis
 
-Executable memanfaatkan beberapa library bawaan Windows.
+Import Table digunakan untuk mengetahui library Windows yang dipanggil oleh executable selama proses eksekusi.
 
 | DLL | Fungsi |
 |-----|--------|
 | KERNEL32.dll | Operasi dasar sistem |
 | USER32.dll | Antarmuka pengguna |
-| ADVAPI32.dll | Registry & Security API |
+| ADVAPI32.dll | Registry dan Security API |
 | MSVCRT.dll | Microsoft C Runtime |
 
-### Hasil Analisis
+Import library tersebut menunjukkan bahwa executable memanfaatkan berbagai Windows API untuk melakukan operasi dasar sistem, manipulasi file, pengelolaan registry, serta fungsi runtime yang disediakan oleh Microsoft C Runtime Library.
 
-Import table menunjukkan bahwa executable menggunakan berbagai Windows API untuk menjalankan fungsi-fungsi sistem.
-
-Informasi ini membantu memperkirakan kemampuan executable tanpa perlu menjalankannya, misalnya operasi file, akses registry, maupun komunikasi dengan sistem operasi.
-
-> **Screenshot**
->
-> Tambahkan tampilan Import Table.
->
-> **Referensi PPT Kelompok 7:** slide yang memperlihatkan daftar import DLL.
+<p align="center">
+    <img src="./screenshots/importfunc.png" width="850">
+</p>
 
 ---
 
-# 8. Indicators of Compromise (IOC)
+# 7. Indicators of Compromise (IOC)
 
 | Jenis | Nilai |
 |-------|-------|
-| Nama File | tasksche.exe |
+| File Name | tasksche.exe |
 | MD5 | 84c82835a5d21bbcf75a61706d8ab549 |
 | SHA-256 | ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa |
 | Compiler | Microsoft Visual C/C++ |
 | Packer | Packed / Compressed |
 
-IOC dapat digunakan sebagai identitas digital executable sehingga memudahkan proses identifikasi pada berbagai platform analisis malware.
+Informasi IOC dapat dimanfaatkan sebagai identitas digital executable sehingga mempermudah proses identifikasi maupun korelasi terhadap laporan analisis lainnya.
 
 ---
 
-# 9. Ringkasan Hasil Analisis
+# 8. Ringkasan Analisis
 
-Berdasarkan hasil Static Analysis diperoleh beberapa informasi berikut:
+Selama proses Static Analysis diperoleh beberapa temuan penting, di antaranya:
 
 - Binary menggunakan format Portable Executable (PE).
 - Memiliki struktur section standar Windows.
-- Menggunakan beberapa Windows API melalui import library.
-- Ditemukan berbagai strings yang memberikan gambaran awal mengenai karakteristik executable.
-- Analisis dilakukan tanpa menjalankan program sehingga tidak diperoleh informasi mengenai perilaku runtime.
+- Menggunakan beberapa Windows API melalui Import Table.
+- Ditemukan berbagai strings yang memberikan petunjuk mengenai karakteristik executable.
+- Analisis dilakukan sepenuhnya tanpa menjalankan binary.
 
 ---
 
-# 10. Kesimpulan
+# 9. Kesimpulan
 
-Static Analysis merupakan tahapan awal yang penting dalam proses Reverse Engineering karena mampu memberikan banyak informasi tanpa harus mengeksekusi executable.
+Static Analysis memberikan gambaran awal mengenai struktur internal executable tanpa perlu menjalankan program secara langsung. Informasi yang diperoleh dari Header Analysis, Section Analysis, Strings Analysis, Import Function Analysis, serta Hash File mampu membantu memahami karakteristik dasar executable sebelum dilakukan analisis lanjutan seperti Dynamic Analysis maupun proses Reverse Engineering yang lebih mendalam.
 
-Melalui analisis terhadap header, section, strings, import table, dan hash file, diperoleh gambaran umum mengenai struktur internal binary serta karakteristik executable. Informasi tersebut dapat dijadikan dasar untuk menentukan langkah analisis berikutnya, seperti Dynamic Analysis atau proses Reverse Engineering yang lebih mendalam.
+Melalui proses ini dapat disimpulkan bahwa metode Static Analysis merupakan tahapan yang aman dan efektif untuk mengidentifikasi struktur binary, memahami komponen penting executable, serta menyusun hipotesis awal mengenai fungsi program berdasarkan artefak yang tersedia.
 
 ---
 
 # Disclaimer
 
-Dokumen ini dibuat untuk tujuan edukasi sebagai bagian dari pembelajaran mata kuliah Reverse Engineering.
+Repository ini dibuat untuk tujuan edukasi sebagai bagian dari pembelajaran mata kuliah **Reverse Engineering**.
 
-Binary asli tidak disertakan di dalam repository. Seluruh analisis dilakukan pada lingkungan laboratorium/virtual machine untuk kepentingan pembelajaran keamanan siber.
+Binary asli tidak disertakan di dalam repository. Seluruh dokumentasi hanya berisi hasil observasi dan analisis yang dilakukan pada lingkungan laboratorium atau virtual machine untuk kepentingan pembelajaran keamanan siber.
